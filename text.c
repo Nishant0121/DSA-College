@@ -1,119 +1,169 @@
 #include <stdio.h>
 
+void print(int a[], int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        printf("%d ", a[i]);
+    }
+    printf("\n");
+}
+
+int division(int a[], int low, int high)
+{
+    int pivot = a[low];
+    int i = low + 1;
+    int j = high;
+    int temp;
+    do
+    {
+        while (i <= high && a[i] <= pivot)
+        {
+            i++;
+        }
+        while (a[j] > pivot)
+        {
+            j--;
+        }
+        if (i < j)
+        {
+            temp = a[i];
+            a[i] = a[j];
+            a[j] = temp;
+        }
+    } while (i < j);
+    temp = a[low];
+    a[low] = a[j];
+    a[j] = temp;
+    return j;
+}
+
+void quick(int a[], int low, int high)
+{
+    int divide;
+    if (low < high)
+    {
+        divide = division(a, low, high);
+        quick(a, low, divide - 1);
+        quick(a, divide + 1, high);
+    }
+}
+
+void merge(int a[], int low, int mid, int high)
+{
+    int i, j, k;
+    int n1 = mid - low + 1;
+    int n2 = high - mid;
+    int L[n1], R[n2];
+
+    for (i = 0; i < n1; i++)
+        L[i] = a[low + i];
+    for (j = 0; j < n2; j++)
+        R[j] = a[mid + 1 + j];
+
+    i = 0;
+    j = 0;
+    k = low;
+    while (i < n1 && j < n2)
+    {
+        if (L[i] <= R[j])
+        {
+            a[k] = L[i];
+            i++;
+        }
+        else
+        {
+            a[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < n1)
+    {
+        a[k] = L[i];
+        i++;
+        k++;
+    }
+
+    while (j < n2)
+    {
+        a[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+void mergeSort(int a[], int low, int high)
+{
+    if (low < high)
+    {
+        int mid = low + (high - low) / 2;
+        mergeSort(a, low, mid);
+        mergeSort(a, mid + 1, high);
+        merge(a, low, mid, high);
+    }
+}
+
+void bubbleSort(int a[], int size)
+{
+    int temp;
+    for (int i = 0; i < size - 1; i++)
+    {
+        for (int j = 0; j < size - i - 1; j++)
+        {
+            if (a[j] > a[j + 1])
+            {
+                temp = a[j];
+                a[j] = a[j + 1];
+                a[j + 1] = temp;
+            }
+        }
+    }
+}
+
 void main()
 {
-    int A[100], n, k, i, mid, low, high;
-
-    printf("Enter the 1.Binary search 2.linear search 3.interpolation: ");
-    scanf("%d", &n);
-    switch (n)
+    int a[100];
+    int size;
+    int choice;
+    int count = 0;
+    while (count == 0)
     {
-    case 1:
-        printf("The binary search:\n ");
-        int A[100], n, k, i, mid, low, high;
-        printf("Enter the length of array \n ");
-        scanf("%d", &n);
-        printf("enter the number to found ");
-        scanf("%d", &k);
-        printf("Enter the array:\n ");
-        for (int i = 0; i < n; ++i)
+        printf("1) Merge Sort\n2) Quick Sort\n3) Bubble Sort\n4)Exit\n");
+        scanf("%d", &choice);
+
+        if (choice == 4)
         {
-            scanf("%d", &A[i]);
+            count++;
+            break;
         }
-        low = 0;
-        high = n - 1;
-        mid = (high + low) / 2;
-        while (high >= low)
+
+        printf("Enter The Number Of Array elements: ");
+        scanf("%d", &size);
+        printf("Enter the array Elements:\n");
+        for (int i = 0; i < size; i++)
         {
-            if (A[mid] == k)
-            {
-                printf("%d is found at %d", k, mid);
-                break;
-            }
-            if (k < A[mid])
-            {
-                high = mid - 1;
-            }
-            else
-                low = mid + 1;
-            mid = (high + low) / 2;
+            scanf("%d", &a[i]);
         }
-        if (high < low)
-            printf("%d is not found", k);
-        break;
-    case 2:
-        printf("The linear search:\n ");
-        printf("enter the length of array:\n ");
-        scanf("%d", &n);
-        printf("enter the number to found");
-        scanf("%d", &k);
-        printf("enter the element of array:\n ");
-        int ans;
-        for (int i = 0; i < n; i++)
+
+        switch (choice)
         {
-            scanf("%d", &A[i]);
+        case 1:
+            mergeSort(a, 0, size - 1);
+            break;
+        case 2:
+            quick(a, 0, size - 1);
+            break;
+        case 3:
+            bubbleSort(a, size);
+            break;
+        default:
+            printf("Invalid choice\n");
+            return;
         }
-        for (int i = 0; i < n; i++)
-        {
-            if (A[i] == k)
-            {
-                ans = i;
-                break;
-            }
-        }
-        if (ans == -1)
-        {
-            printf("Element not found");
-        }
-        else
-        {
-            printf("Element found at %d", ans);
-        }
-        break;
-    case 3:
-        printf("Interpolation search:\n");
-        printf("Enter the length of the array: ");
-        scanf("%d", &n);
-        printf("Enter the number to find: ");
-        scanf("%d", &k);
-        printf("Enter the array elements:\n");
-        for (i = 0; i < n; ++i)
-        {
-            scanf("%d", &A[i]);
-        }
-        low = 0;
-        high = n - 1;
-        while (low <= high && k >= A[low] && k <= A[high])
-        {
-            int pos = low + (((double)(high - low) / (A[high] - A[low])) * (k - A[low]));
-            if (A[pos] == k)
-            {
-                ans = pos;
-                break;
-            }
-            if (A[pos] < k)
-            {
-                low = pos + 1;
-            }
-            else
-            {
-                high = pos - 1;
-            }
-        }
-        if (ans != -1)
-        {
-            printf("Element found at position %d\n", ans);
-        }
-        else
-        {
-            printf("Element not found\n");
-        }
-        break;
-    case 4:
-        printf("exit");
-        break;
-    default:
-        printf("Invalid choice");
-        break;
+
+        printf("Sorted array:\n");
+        print(a, size);
     }
 }
