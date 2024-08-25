@@ -5,37 +5,46 @@ struct Stack
     int top;
     int arr[100];
 };
-
-int isEmpty(struct Stack *s)
+struct Stack s;
+int isEmpty()
 {
-    if (s->top == -1)
-        return 1;
-    else
-        return 0;
+    return s.top == -1;
 }
 
-int isFull(struct Stack *s)
+int isFull()
 {
-    if (s->top == 100 - 1)
-        return 1;
-    else
-        return 0;
+    return s.top == 99;
 }
 
-void push(int num, struct Stack *s)
+void push(int num)
 {
-    if (isFull(s))
+    if (isFull())
     {
         printf("Stack is full\n");
     }
     else
     {
-        s->top++;
-        s->arr[s->top] = num;
+        s.top++;
+        s.arr[s.top] = num;
+        printf("%d pushed to stack\n", num);
     }
 }
 
-void pop(struct Stack *s)
+// Function to pop an element from the stack
+void pop()
+{
+    if (isEmpty())
+    {
+        printf("Stack is empty\n");
+    }
+    else
+    {
+        printf("Popped element: %d\n", s.arr[s.top]);
+        s.top--;
+    }
+}
+
+void display()
 {
     if (isEmpty(s))
     {
@@ -43,49 +52,51 @@ void pop(struct Stack *s)
     }
     else
     {
-
-        printf("Popped element: %d\n", s->arr[s->top]);
-        s->top--;
-    }
-}
-
-void display(struct Stack *s)
-{
-    if (isEmpty(s))
-    {
-        printf("Stack is empty\n");
-    }
-    else
-    {
-        for (int i = s->top; i >= 0; i--)
+        printf("Stack elements are:\n");
+        for (int i = s.top; i >= 0; i--)
         {
-            printf("%d\n", s->arr[i]);
+            printf("%d\n", s.arr[i]);
         }
     }
 }
 
-void main()
+// Main function to demonstrate stack operations with a menu-driven approach
+int main()
 {
-    struct Stack s;
+
     s.top = -1;
+    int choice, value;
 
-    if (isEmpty(&s))
+    do
     {
-        printf("Stack is empty\n");
-    }
+        printf("\nStack Operations:\n");
+        printf("1. Push\n");
+        printf("2. Pop\n");
+        printf("3. Display\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
 
-    push(1, &s);
-    push(2, &s);
-    push(3, &s);
-    display(&s);
-    if (isEmpty(&s))
-    {
-        printf("Stack is empty\n");
-    }
-    else
-    {
-        printf("Stack is not empty\n");
-    }
-    pop(&s);
-    display(&s);
+        switch (choice)
+        {
+        case 1:
+            printf("Enter value to push: ");
+            scanf("%d", &value);
+            push(value);
+            break;
+        case 2:
+            pop();
+            break;
+        case 3:
+            display(s);
+            break;
+        case 4:
+            printf("Exiting...\n");
+            break;
+        default:
+            printf("Invalid choice! Please enter a valid option.\n");
+        }
+    } while (choice != 4);
+
+    return 0;
 }
